@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Post.css";
+import Sentiment from 'sentiment';
 import Comment from "../../img/comment.png";
 import Share from "../../img/share.png";
 import Heart from "../../img/like.png";
@@ -7,17 +8,26 @@ import NotLike from "../../img/notlike.png";
 import { likePost } from "../../api/PostsRequests";
 import { useSelector } from "react-redux";
 
+var sentiment = new Sentiment();
+
+
+
+
 const Post = ({ data }) => {
   const { user } = useSelector((state) => state.authReducer.authData);
   const [liked, setLiked] = useState(data.likes.includes(user._id));
   const [likes, setLikes] = useState(data.likes.length)
-
+  var result = sentiment.analyze(data.desc);
   
   const handleLike = () => {
     likePost(data._id, user._id);
     setLiked((prev) => !prev);
     liked? setLikes((prev)=>prev-1): setLikes((prev)=>prev+1)
   };
+
+  if(result > 0){
+
+  }
   return (
     <div className="Post">
       <img
@@ -43,7 +53,8 @@ const Post = ({ data }) => {
         <span>
           <b>{data.name} </b>
         </span>
-        <span>{data.desc}</span>
+        <span className="caption">{data.desc}</span>
+       {console.log(result)}
       </div>
     </div>
   );
